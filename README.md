@@ -2,7 +2,7 @@
 
 Manage your configuration files and keep them up to date.
 
-ACFG detects missing configuration files and creates them from templates. It also detects live changes in configuration files and updates them.
+ACFG detects missing configuration keys and creates them from the given default config. It can also detect live changes in the config file.
 
 ## Usage
 Install the package first
