@@ -7,7 +7,7 @@ interface ConfigOptions {
 }
 
 function Config<T>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
-    const configPath = o?.path || r(__dirname, "./config.json");
+    const configPath = o?.path || "./config.json";
     const logMissing = o?.logMissing || false;
 
     if (fs.existsSync(configPath)) {
