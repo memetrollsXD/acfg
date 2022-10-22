@@ -17,7 +17,7 @@ import Config from "acfg";
 
 // Create a new config
 // The configuration file gets stored in ./config.json by default
-const config = new Config({
+const config = Config({
   // Default fields go here
   HTTP_PORT: 8080,
   MONGODB_URI: "mongodb://localhost:27017",
@@ -31,7 +31,7 @@ Alternatively, you can define another path for the configuration file:
 
 ```ts
 import { resolve as r } from "path";
-const config = new Config({
+const config = Config({
   // Default fields go here
   HTTP_PORT: 8080,
   MONGODB_URI: "mongodb://localhost:27017",
