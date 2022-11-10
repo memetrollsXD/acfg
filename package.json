@@ -1,8 +1,9 @@
 {
     "scripts": {
-        "dev": "npx ts-node-dev Config.ts --transpile-only",
+        "dev": "npx ts-node-dev src/Config.ts --transpile-only",
         "test": "npx jest",
-        "prepublish": "npx tsc"
+        "prepublish": "npx tsc",
+        "build": "npx tsc"
     },
     "devDependencies": {
         "@types/jest": "^29.2.0",
@@ -12,8 +13,11 @@
         "typescript": "^4.8.4"
     },
     "name": "acfg",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "Manage your configuration files and keep them up to date",
+    "files": [
+        "dist"
+    ],
     "main": "dist/Config.js",
     "keywords": [
         "config",

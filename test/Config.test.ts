@@ -1,5 +1,5 @@
 import { writeFileSync, readFileSync } from "fs";
-import Config from "./Config";
+import Config from "../src/Config";
 
 const c = Config({
     TEST_FIELD: true,
