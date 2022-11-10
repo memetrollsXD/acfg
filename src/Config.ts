@@ -1,12 +1,11 @@
 import * as fs from "fs";
-import { resolve as r } from "path";
 
 interface ConfigOptions {
     path?: string;
     logMissing?: boolean;
 }
 
-function Config<T>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
+function Config<T = object>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
     const configPath = o?.path || "./config.json";
     const logMissing = o?.logMissing || false;
 
