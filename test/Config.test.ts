@@ -1,7 +1,7 @@
 import { writeFileSync, readFileSync } from "fs";
-import Config from "../src/Config";
+import acfg from "../src/Config";
 
-const c = Config({
+const c = acfg({
     TEST_FIELD: true,
     NESTED_TEST: {
         TEST_FIELD: true,
