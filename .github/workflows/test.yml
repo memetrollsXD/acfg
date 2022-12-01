@@ -10,7 +10,6 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     strategy:
       matrix:
@@ -24,4 +23,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install
       - run: npm test
-      - run: npm test
+      - continue-on-error: true # I hate my CI skills
+      - name: "Run tests"
+        run: npm test
