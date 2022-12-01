@@ -13,25 +13,28 @@ npm i acfg
 Add it to your project
 
 ```ts
-import Config from "acfg";
+import acfg from "acfg";
 
 // Create a new config
 // The configuration file gets stored in ./config.json by default
-const config = Config({
+const Config = acfg({
   // Default fields go here
   HTTP_PORT: 8080,
   MONGODB_URI: "mongodb://localhost:27017",
 });
 
-mongoose.connect(config.MONGODB_URI);
-app.listen(config.HTTP_PORT);
+mongoose.connect(Config.MONGODB_URI);
+app.listen(Config.HTTP_PORT);
+
+// Optional: export it to use it in other files
+export default Config;
 ```
 
 Alternatively, you can define another path for the configuration file:
 
 ```ts
 import { resolve as r } from "path";
-const config = Config({
+const Config = acfg({
   // Default fields go here
   HTTP_PORT: 8080,
   MONGODB_URI: "mongodb://localhost:27017",

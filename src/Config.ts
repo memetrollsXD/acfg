@@ -5,7 +5,7 @@ interface ConfigOptions {
     logMissing?: boolean;
 }
 
-function Config<T = object>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
+function acfg<T = object>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
     const configPath = o?.path || "./config.json";
     const logMissing = o?.logMissing || false;
 
@@ -125,4 +125,4 @@ function checkFields<T>(obj: Partial<T>, defaultObj: T) {
     return Object.keys(appendObj).length > 0 ? appendObj : null;
 }
 
-export default Config;
+export default acfg;
