@@ -1,4 +1,4 @@
-import * as fs from "fs";
+import fs from "fs";
 
 interface ConfigOptions {
     path?: string;
@@ -10,58 +10,58 @@ function acfg<T extends object>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
     const logMissing = o?.logMissing ?? false;
 
     if (fs.existsSync(configPath)) {
-        const x = new Proxy({}, {
+        let target = readConfig<typeof DEFAULT_CONFIG>(configPath);
+        const x = new Proxy(target, {
             get(_, _prop) {
-                const prop = _prop as keyof typeof DEFAULT_CONFIG;
-                let target = readConfig<typeof DEFAULT_CONFIG>(configPath);
+                const targetProp = _prop as keyof typeof DEFAULT_CONFIG;
 
                 // If the property is in the config, return the value
-                if (prop in target) {
+                if (targetProp in target) {
                     // Check if all fields are present
-                    const p = target[prop];
-                    const d = DEFAULT_CONFIG[prop];
+                    const prop = target[targetProp];
+                    const defaultProp = DEFAULT_CONFIG[targetProp];
 
-                    if (typeof p === "object") {
-                        if (Array.isArray(p)) {
+                    if (typeof prop === "object") {
+                        if (Array.isArray(prop)) {
+                            // Check if all fields are present in each array element
                             // @ts-ignore
-                            target[prop] = p.map((x, i) => mergeDeep(x, checkFields(x, d[i])));
+                            target[targetProp] = prop.map((x, i) => mergeDeep(x, checkFields(x, defaultProp[i])));
                         } else {
-                            // @ts-ignore
-                            const x = checkFields(p, d);
+                            // Check if all fields are present in the object
+                            const x = checkFields(prop, defaultProp);
                             if (x && Object.keys(x).length > 0) {
                                 // Append to obj
-                                // @ts-ignore
-                                target[prop] = mergeDeep(p, x);
+                                target[targetProp] = mergeDeep(prop!, x);
                             }
                         }
                         fs.writeFileSync(configPath, JSON.stringify(target, null, 4));
                     }
 
-                    return target[prop];
+                    return target[targetProp];
                 }
 
                 // If the property is not in the config, add to config and return the default value
-                // @ts-ignore
-                target[prop] = DEFAULT_CONFIG[prop];
-                fs.writeFileSync(configPath, JSON.stringify(target, null, 4));
-                if (logMissing) console.log(`Added missing config key: ${String(prop)}`);
+                if (targetProp in DEFAULT_CONFIG) {
+                    // Check if field is present in default config
+                    target[targetProp] = DEFAULT_CONFIG[targetProp];
+                    fs.writeFileSync(configPath, JSON.stringify(target, null, 4));
+                    if (logMissing) console.log(`Added missing config key: ${String(targetProp)}`);
+                }
 
-                return DEFAULT_CONFIG[prop];
+                return DEFAULT_CONFIG[targetProp];
             }
         });
 
-        return x as typeof DEFAULT_CONFIG;
+        return x;
     } else {
         // Create config file
-
         if (logMissing) console.log("No config file found; creating one for you...");
         fs.writeFileSync(configPath, JSON.stringify(DEFAULT_CONFIG, null, 4));
         return DEFAULT_CONFIG;
     }
 }
 
-//* Helper Functions *//
-
+// #region Helper Functions
 function isObject(item: any): boolean {
     return (item && typeof item === 'object' && !Array.isArray(item));
 }
@@ -125,5 +125,6 @@ function checkFields<T>(obj: Partial<T>, defaultObj: T) {
 
     return Object.keys(appendObj).length > 0 ? appendObj : null;
 }
+// #endregion
 
 export default acfg;

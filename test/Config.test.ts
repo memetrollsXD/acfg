@@ -1,4 +1,4 @@
-import { writeFileSync, readFileSync } from "fs";
+import { writeFileSync, readFileSync, unlinkSync } from "fs";
 import acfg from "../src/Config";
 
 const c = acfg({
@@ -48,37 +48,22 @@ test('Missing 1st layer keys', () => {
 });
 
 test('Add missing 1st layer keys', () => {
-    writeFileSync("./config.json", JSON.stringify({
-        // "TEST_FIELD": true,
-        "NESTED_TEST": {
-            "TEST_FIELD": true,
-            "MORE_NESTED": {
-                "TEST_FIELD": true
-            }
-        },
-        "ARRAY_TEST": [
-            {
-                "TEST_FIELD": true,
-                "MORE_NESTED": {
-                    "TEST_FIELD": true,
-                    "NEW_FIELD": "new"
-                }
-            },
-            {
-                "TEST_FIELD": false,
-                "MORE_NESTED": {
-                    "TEST_FIELD": false
-                }
-            }
-        ]
+    writeFileSync("./fmtest.json", JSON.stringify({
+        EXISTING_FIELD: true,
+        // MISSING_FIELD: true
     }));
 
-    c.TEST_FIELD; // Trigger proxy getter
+    const fmissingTest = acfg({
+        EXISTING_FIELD: true,
+        MISSING_FIELD: true
+    }, { path: "./fmtest.json" });
 
-    const config = JSON.parse(readFileSync("./config.json", "utf8"));
+    fmissingTest.MISSING_FIELD; // Trigger proxy getter
 
-    // @ts-ignore
-    expect(config.TEST_FIELD).toBe(true);
+    const config = JSON.parse(readFileSync("./fmtest.json", "utf8"));
+    console.log(config, fmissingTest);
+
+    expect(config.MISSING_FIELD).toBe(true);
 });
 
 test('Add missing 2nd layer keys', () => {
@@ -148,3 +133,20 @@ test('Add missing array keys', () => {
     // @ts-ignore
     expect(config.ARRAY_TEST[0].MORE_NESTED.NEW_FIELD).toBe("new");
 });
+
+test('Get whole config', () => {
+    unlinkSync("./config.json");
+
+    const config = {
+        TEST_NAME: "WHOLE_CONFIG_TEST",
+        TEST_FIELD: true
+    };
+
+    const c = acfg(config);
+
+    expect(c).toEqual(config);
+});
+
+// Clean up
+unlinkSync("./config.json");
+unlinkSync("./fmtest.json");
