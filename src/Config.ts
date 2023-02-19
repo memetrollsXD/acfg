@@ -5,9 +5,9 @@ interface ConfigOptions {
     logMissing?: boolean;
 }
 
-function acfg<T = object>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
-    const configPath = o?.path || "./config.json";
-    const logMissing = o?.logMissing || false;
+function acfg<T extends object>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
+    const configPath = o?.path ?? "./config.json";
+    const logMissing = o?.logMissing ?? false;
 
     if (fs.existsSync(configPath)) {
         const x = new Proxy({}, {
@@ -15,6 +15,7 @@ function acfg<T = object>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
                 const prop = _prop as keyof typeof DEFAULT_CONFIG;
                 let target = readConfig<typeof DEFAULT_CONFIG>(configPath);
 
+                // If the property is in the config, return the value
                 if (prop in target) {
                     // Check if all fields are present
                     const p = target[prop];
@@ -38,8 +39,8 @@ function acfg<T = object>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
 
                     return target[prop];
                 }
-                // If the property is not in the config, add to config and return the default value
 
+                // If the property is not in the config, add to config and return the default value
                 // @ts-ignore
                 target[prop] = DEFAULT_CONFIG[prop];
                 fs.writeFileSync(configPath, JSON.stringify(target, null, 4));
