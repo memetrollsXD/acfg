@@ -146,7 +146,3 @@ test('Get whole config', () => {
 
     expect(c).toEqual(config);
 });
-
-// Clean up
-unlinkSync("./config.json");
-unlinkSync("./fmtest.json");
