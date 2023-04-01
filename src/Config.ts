@@ -49,6 +49,20 @@ function acfg<T extends object>(DEFAULT_CONFIG: T, o?: ConfigOptions): T {
                 }
 
                 return DEFAULT_CONFIG[targetProp];
+            },
+
+            set(_, _prop, value) {
+                try {
+                    console.log(target)
+                    const targetProp = _prop as keyof typeof DEFAULT_CONFIG;
+                    target[targetProp] = value;
+                    fs.writeFileSync(configPath, JSON.stringify(target, null, 4));
+                    console.log(target)
+
+                    return true;
+                } catch {
+                    return false;
+                }
             }
         });
 

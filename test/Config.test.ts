@@ -1,6 +1,13 @@
 import { writeFileSync, readFileSync, unlinkSync } from "fs";
 import acfg from "../src/Config";
 
+function reset() {
+    try {
+        unlinkSync("./config.json");
+        unlinkSync("./fmtest.json");
+    } catch { }
+}
+
 const c = acfg({
     TEST_FIELD: true,
     NESTED_TEST: {
@@ -27,6 +34,31 @@ const c = acfg({
 }, { logMissing: true });
 
 test('1st layer keys', () => {
+    const c = acfg({
+        TEST_FIELD: true,
+        NESTED_TEST: {
+            TEST_FIELD: true,
+            MORE_NESTED: {
+                TEST_FIELD: true
+            }
+        },
+        ARRAY_TEST: [
+            {
+                TEST_FIELD: true,
+                MORE_NESTED: {
+                    TEST_FIELD: true,
+                    NEW_FIELD: "new"
+                }
+            },
+            {
+                TEST_FIELD: false,
+                MORE_NESTED: {
+                    TEST_FIELD: false
+                }
+            }
+        ]
+    }, { logMissing: true });
+
     expect(c.TEST_FIELD).toBe(true);
 });
 
@@ -145,4 +177,5 @@ test('Get whole config', () => {
     const c = acfg(config);
 
     expect(c).toEqual(config);
+    reset();
 });
