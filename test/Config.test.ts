@@ -167,7 +167,7 @@ test('Add missing array keys', () => {
 });
 
 test('Get whole config', () => {
-    unlinkSync("./config.json");
+    reset();
 
     const config = {
         TEST_NAME: "WHOLE_CONFIG_TEST",
@@ -177,5 +177,4 @@ test('Get whole config', () => {
     const c = acfg(config);
 
     expect(c).toEqual(config);
-    reset();
 });
