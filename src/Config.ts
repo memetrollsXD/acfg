@@ -121,7 +121,7 @@ function checkFields<T>(obj: Partial<T>, defaultObj: T) {
             appendObj[key] = defaultObj[key];
         } else {
             if (typeof obj[key] === "object") {
-                if (Array.isArray(obj[key])) {
+                if (Array.isArray(obj[key]) && typeof (<any[]>obj[key])[0] === "object") {
                     // @ts-ignore
                     appendObj[key] = obj[key].map((x, i) => checkFields(x, defaultObj[key][i]));
                 } else {
